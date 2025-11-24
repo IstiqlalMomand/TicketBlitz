@@ -1,9 +1,39 @@
 services:
+  # --- Service 1: The Database ---
   postgres:
-    image: 'postgres:latest'
+    image: 'postgres:16'
+    container_name: ticketblitz-db
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      - 'POSTGRES_DB=ticketblitz'      # Name of the database to create
+      - 'POSTGRES_PASSWORD=secret'     # The password we will use in Java
+      - 'POSTGRES_USER=myuser'         # The username
     ports:
-      - '5432'
+      - '5432:5432'    # "Open a window": Connect Laptop Port 5432 -> Container Port 5432
+    restart: always
+
+  # --- Service 2: The Cache (Redis) ---
+  redis:
+    image: 'redis:7-alpine'            # "Alpine" means a tiny, lightweight version
+    container_name: ticketblitz-redis
+    ports:
+      - '6379:6379'    # Standard Redis port
+    restart: always
+
+  # --- Service 3: The Message Broker (Kafka) ---
+  kafka:
+    image: 'confluentinc/cp-kafka:7.6.0'
+    container_name: ticketblitz-kafka
+    ports:
+      - '9092:9092'    # The port our Java app will talk to
+    environment:
+      # These are complex settings to make Kafka run without "Zookeeper" (The modern way)
+      - 'KAFKA_NODE_ID=1'
+      - 'KAFKA_PROCESS_ROLES=broker,controller'
+      - 'KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka:29093'
+      - 'KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:29093'
+      - 'KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092'
+      - 'KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT'
+      - 'KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER'
+      - 'KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1'
+      - 'CLUSTER_ID=MkU3OEVBNTcwNTJENDM2Qk'
+    restart: always
