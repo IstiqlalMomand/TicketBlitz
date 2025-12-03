@@ -1,4 +1,4 @@
-# 🎫 TicketBlitz - High-Concurrency Distributed Booking System
+#  TicketBlitz - High-Concurrency Distributed Booking System
 
 ![Java](https://img.shields.io/badge/Java-25-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.4-green)
@@ -7,14 +7,14 @@
 ![Redis](https://img.shields.io/badge/Redis-7-red)
 ![Kafka](https://img.shields.io/badge/Kafka-7.6-black)
 
-## 📖 The Problem
+##  The Problem
 In standard ticket booking systems, a "Race Condition" occurs when thousands of users try to buy the last ticket simultaneously. Without proper handling, multiple threads read the same "available count" before anyone updates it, leading to **Double Booking** and massive data inconsistency (The "Lost Update" Anomaly).
 
 **TicketBlitz** is a distributed system engineered to handle these high-concurrency scenarios using **Pessimistic Locking**, **Distributed Caching (Redis)**, and **Event-Driven Architecture (Kafka)**.
 
 ---
 
-## 🏗 System Architecture
+##  System Architecture
 The system follows a high-performance **Event-Driven Architecture** designed to handle 10k+ TPS (Transactions Per Second).
 
 ```mermaid
