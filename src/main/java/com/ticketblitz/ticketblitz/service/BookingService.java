@@ -12,35 +12,45 @@ public class BookingService {
 
     private final EventRepository eventRepository;
     private final TicketRepository ticketRepository;
+    private final RedisService redisService; // ✅ Inject Redis
 
-    public BookingService(EventRepository eventRepository, TicketRepository ticketRepository) {
+    public BookingService(EventRepository eventRepository, TicketRepository ticketRepository, RedisService redisService) {
         this.eventRepository = eventRepository;
         this.ticketRepository = ticketRepository;
+        this.redisService = redisService;
     }
 
     @Transactional
     public String bookTicket(Long eventId, Long userId) {
-        // USE THE LOCK!
+        // 🚀 STEP 1: Fast Check (Redis)
+        // We decrement in memory. This happens in microseconds.
+        Long newCount = redisService.decrementTicketCount(eventId);
+
+        if (newCount < 0) {
+            // If Redis says we are out, we reject immediately.
+            // We don't even touch the Database.
+            return "❌ Redis says: Sold out!";
+        }
+
+        // 🐢 STEP 2: Slow Check (Database)
+        // If we passed Redis, we are allowed to enter the database transaction.
+        // We still use Locking for safety, but traffic is now throttled by Redis.
         Event event = eventRepository.findByIdWithLock(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
 
-        // 2. CHECK: Are tickets available?
         if (event.getAvailableTickets() > 0) {
-
-            // ⚠️ ARTIFICIAL DELAY to force Race Condition
+            // Artificial delay to prove Redis is doing its job
             try { Thread.sleep(50); } catch (InterruptedException e) {}
 
-            // 3. ACT: Reduce the count
             event.setAvailableTickets(event.getAvailableTickets() - 1);
             eventRepository.save(event);
 
-            // 4. Create the Ticket receipt
             Ticket ticket = new Ticket(userId, eventId);
             ticketRepository.save(ticket);
 
-            return "✅ Success! Ticket booked for User " + userId;
+            return "✅ Success!";
         } else {
-            return "❌ Failed! Sold out.";
+            return "❌ DB says: Sold out.";
         }
     }
 
