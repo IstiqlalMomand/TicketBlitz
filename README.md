@@ -4,7 +4,7 @@ A production-grade distributed system simulation demonstrating how to handle mas
 
 ---
 
-## 📖 The Problem
+##  The Problem
 
 In standard ticket booking systems, a **race condition** occurs when thousands of users try to buy the last ticket simultaneously.
 
@@ -21,7 +21,7 @@ In standard ticket booking systems, a **race condition** occurs when thousands o
 ---
 
 
-## 🏗 System Architecture
+##  System Architecture
 
 The system follows a high-performance **Event-Driven Architecture** designed to handle **10k+ TPS**.
 
@@ -57,7 +57,7 @@ sequenceDiagram
 
 ```
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 | Component | Technology | Usage |
 |---|---|---|
@@ -67,7 +67,7 @@ sequenceDiagram
 | Broker | Apache Kafka (KRaft) | Asynchronous message queue for decoupling writes. |
 | DevOps | Docker Compose | Orchestrates the multi-container environment. |
 
-## 🧪 Engineering Journey
+##  Engineering Journey
 
 This project was built in phases to demonstrate the evolution from a **“broken”** app to a **“distributed”** one.
 
@@ -82,11 +82,11 @@ This project was built in phases to demonstrate the evolution from a **“broken
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 Follow these steps to run the complete system locally.
 
-### ✅ Prerequisites
+###  Prerequisites
 
 - **Docker Desktop** (must be running)
 - **Java 21+** (project uses Java 25)
@@ -129,7 +129,7 @@ Application will start on:
 
 ---
 
-## 🎮 Testing & Attack Simulation
+##  Testing & Attack Simulation
 
 ### 1) Simple Manual Test
 
@@ -200,11 +200,9 @@ After the script finishes, check the Audit Endpoint.
 
 ## 🤝 Contributing
 
-This project is a portfolio demonstration of **Distributed Systems Engineering**.
-
+Thanks for your contribution !
 - Fork the repository
 - Create a feature branch: `git checkout -b feature/my-change`
 - Commit your changes: `git commit -m "Add my change"`
 - Push to your fork: `git push origin feature/my-change`
 - Open a Pull Request
->>>>>>> 3c0db7a (Update README.md and attack.sh files)
