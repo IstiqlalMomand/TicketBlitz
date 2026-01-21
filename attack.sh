@@ -1,10 +1,27 @@
-#!/bin/bash
-echo "🚀 Launching MASSIVE Attack (500 Requests)..."
-# Send 500 requests in the background
-for i in {1..500}
-do
-   curl -X POST "http://localhost:8080/api/bookings?eventId=2&userId=$i" > /dev/null 2>&1 &
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Default to 500 if not provided
+N="${1:-500}"
+
+# Must be an integer
+if ! [[ "$N" =~ ^[0-9]+$ ]]; then
+  echo "Error: '$N' is not a valid positive integer."
+  exit 1
+fi
+
+# Must be > 0
+if (( N <= 0 )); then
+  echo "Error: number must be bigger than 0."
+  exit 1
+fi
+
+echo "🚀 Launching MASSIVE Attack ($N Requests)..."
+
+for i in $(seq 1 "$N"); do
+  curl -sS -X POST "http://localhost:8080/api/bookings?eventId=1&userId=$i"
 done
+
 echo "✅ Requests sent. Waiting for the dust to settle..."
 wait
 echo "🏁 Attack Finished. CHECK THE BROWSER NOW!"
